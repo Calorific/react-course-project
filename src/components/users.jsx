@@ -9,16 +9,16 @@ const Users = () => {
   }
 
   const renderPhrase = n => {
-    if (!users.length)
+    if (!n)
       return <span className='badge bg-danger'>Никто с тобой не тусанет</span>
 
-    let form, length = n || users.length
-    if (!(length > 4 && length < 21) && length % 10 > 1 && length % 10 < 5)
+    let form
+    if (!(n % 100 > 4 && n % 100 < 21) && n % 10 > 1 && n % 10 < 5)
       form = 'человека'
     else
       form = 'человек'
 
-    return <span className='badge bg-primary'>{`${length} ${form} тусанет с тобой сегодня`}</span>
+    return <span className='badge bg-primary'>{`${n} ${form} тусанет с тобой сегодня`}</span>
   }
 
   const getQualityBadge = q => <span className={"badge m-1  bg-" + q.color} key={q._id}>{q.name}</span>
@@ -39,7 +39,7 @@ const Users = () => {
   )
 
   return (<>
-    <h2>{renderPhrase()}</h2>
+    <h2>{renderPhrase(users.length)}</h2>
     {users.length ?
     <table className="table">
       <thead>
