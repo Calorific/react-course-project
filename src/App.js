@@ -1,9 +1,9 @@
-import Table from './components/Table'
+import Users from './components/users'
 
 function App() {
   return (
     <div className="App">
-      <Table />
+      <Users />
     </div>
   )
 }
