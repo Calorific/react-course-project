@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 import api from '../API'
+import User from './user'
+import SearchStatus from './searchStatus'
 
 const Users = () => {
   const [users, setUsers] = useState(api.users.fetchAll())
@@ -8,38 +10,16 @@ const Users = () => {
     setUsers(users.filter(user => user._id !== id))
   }
 
-  const renderPhrase = n => {
-    if (!n)
-      return <span className='badge bg-danger'>Никто с тобой не тусанет</span>
+  const handleMarking = id => {
+    const allUsers = [...users]
+    const user = allUsers.find(u => u._id === id)
+    user.bookmark = !user.bookmark
 
-    let form
-    if (!(n % 100 > 4 && n % 100 < 21) && n % 10 > 1 && n % 10 < 5)
-      form = 'человека'
-    else
-      form = 'человек'
-
-    return <span className='badge bg-primary'>{`${n} ${form} тусанет с тобой сегодня`}</span>
+    setUsers(allUsers)
   }
 
-  const getQualityBadge = q => <span className={"badge m-1  bg-" + q.color} key={q._id}>{q.name}</span>
-
-  const getUserRow = user => (
-    <tr key={user._id}>
-      <td>{user.name}</td>
-      <td>
-        {user.qualities.map(getQualityBadge)}
-      </td>
-      <td>
-        {user.profession.name}
-      </td>
-      <td>{user.completedMeetings}</td>
-      <td>{user.rate}/5</td>
-      <td><button className="btn btn-danger" onClick={() => handleDelete(user._id)}>Удалить</button></td>
-    </tr>
-  )
-
   return (<>
-    <h2>{renderPhrase(users.length)}</h2>
+    <h2>{<SearchStatus length={users.length} />}</h2>
     {users.length ?
     <table className="table">
       <thead>
@@ -49,11 +29,12 @@ const Users = () => {
         <th scope="col">Профессия</th>
         <th scope="col">Встретился, раз</th>
         <th scope="col">Оценка</th>
+        <th scope="col">Избранное</th>
         <th scope="col"></th>
       </tr>
       </thead>
       <tbody>
-        {users.map(getUserRow)}
+        {users.map(user => <User user={user} onDelete={handleDelete} onMarking={handleMarking} key={user._id} />)}
       </tbody>
     </table> : ''}
   </>)
