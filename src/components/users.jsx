@@ -1,26 +1,26 @@
-import React, {useState} from 'react'
-import api from '../API'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+
 import User from './user'
 import SearchStatus from './searchStatus'
+import Pagination from './pagination'
+import paginate from '../utils/paginate'
 
-const Users = () => {
-  const [users, setUsers] = useState(api.users.fetchAll())
+const Users = ({ users, ...rest }) => {
+  const count = users.length
+  const pageSize = 4
 
-  const handleDelete = id => {
-    setUsers(users.filter(user => user._id !== id))
+  const [currentPage, setCurrentPage] = useState(1)
+  const handlePageChange = (pageIndex) => {
+    setCurrentPage(pageIndex)
   }
 
-  const handleMarking = id => {
-    const allUsers = [...users]
-    const user = allUsers.find(u => u._id === id)
-    user.bookmark = !user.bookmark
-
-    setUsers(allUsers)
-  }
+  
+  const userCrop = paginate(users, currentPage, pageSize)
 
   return (<>
     <h2>{<SearchStatus length={users.length} />}</h2>
-    {users.length ?
+    {count ?
     <table className="table">
       <thead>
       <tr>
@@ -34,10 +34,17 @@ const Users = () => {
       </tr>
       </thead>
       <tbody>
-        {users.map(user => <User user={user} onDelete={handleDelete} onMarking={handleMarking} key={user._id} />)}
+        {userCrop.map(user => <User user={user} {...rest} key={user._id} />)}
       </tbody>
     </table> : ''}
+
+    <Pagination itemsCount={count} pageSize={pageSize} onPageChange={handlePageChange} currentPage={currentPage}/>
   </>)
+}
+
+Users.propTypes = {
+  users: PropTypes.arrayOf(PropTypes.object),
+  rest: PropTypes.arrayOf(PropTypes.func)
 }
 
 export default Users

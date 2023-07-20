@@ -1,6 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-const searchStatus = ({ length }) => {
+const SearchStatus = ({ length }) => {
   const renderPhrase = n => {
     if (!n)
       return <span className='badge bg-danger'>Никто с тобой не тусанет</span>
@@ -21,4 +22,8 @@ const searchStatus = ({ length }) => {
   )
 }
 
-export default searchStatus
+SearchStatus.propTypes = {
+  length: PropTypes.number.isRequired,
+}
+
+export default SearchStatus
