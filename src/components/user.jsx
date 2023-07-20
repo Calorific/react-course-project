@@ -4,7 +4,6 @@ import Bookmark from './bookmark'
 
 const User = ({ user, onDelete, onMarking }) => {
 
-
   return (
     <>
       <tr key={user._id}>

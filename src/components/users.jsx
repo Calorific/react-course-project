@@ -11,10 +11,11 @@ const Users = () => {
   }
 
   const handleMarking = id => {
-    const user = users.find(u => u._id === id)
+    const allUsers = [...users]
+    const user = allUsers.find(u => u._id === id)
     user.bookmark = !user.bookmark
 
-    setUsers([...users])
+    setUsers(allUsers)
   }
 
   return (<>
