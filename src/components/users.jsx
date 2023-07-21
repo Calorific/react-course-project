@@ -86,4 +86,9 @@ Users.propTypes = {
   rest: PropTypes.arrayOf(PropTypes.func)
 }
 
+Users.propTypes = {
+  users: PropTypes.arrayOf(PropTypes.object),
+  rest: PropTypes.arrayOf(PropTypes.func)
+}
+
 export default Users
