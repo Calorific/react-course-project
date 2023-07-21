@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 const Main = () => {
 
@@ -8,10 +7,6 @@ const Main = () => {
       <h2>Main Page</h2>
     </>
   )
-}
-
-Main.propTypes = {
-
 }
 
 export default Main

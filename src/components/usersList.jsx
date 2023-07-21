@@ -104,8 +104,4 @@ UsersList.propTypes = {
   rest: PropTypes.arrayOf(PropTypes.func)
 }
 
-UsersList.propTypes = {
-
-}
-
 export default UsersList

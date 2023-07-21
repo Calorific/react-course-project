@@ -38,6 +38,6 @@ module.exports = {
     'multiline-ternary': 0,
     'comma-dangle': 0,
     'space-before-function-paren': 0,
-    'no-unused-vars': 0
+    // 'no-unused-vars': 0
   }
 }
