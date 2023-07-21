@@ -57,7 +57,7 @@ const users = [
     name: 'Боб Келсо',
     profession: professions.doctor,
     qualities: [qualities.buller],
-    completedMeetings: 247,
+    completedMeetings: 249,
     rate: 3.5,
     bookmark: false
   },
@@ -84,7 +84,7 @@ const users = [
     name: 'Леонард Хофстедтер',
     profession: professions.physics,
     qualities: [qualities.strange, qualities.uncertain],
-    completedMeetings: 147,
+    completedMeetings: 149,
     rate: 3.5,
     bookmark: false
   },
