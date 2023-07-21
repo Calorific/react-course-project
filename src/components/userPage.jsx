@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
 import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom'
 import userApi from '../API/fake.api/user.api'
 import QualitiesList from './qualitiesList'
@@ -29,10 +28,6 @@ const UserPage = () => {
       ) : <h1>Loading...</h1>}
     </>
   )
-}
-
-UserPage.propTypes = {
-
 }
 
 export default UserPage

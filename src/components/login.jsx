@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 const Login = () => {
   
@@ -8,10 +7,6 @@ const Login = () => {
       <h2>Login</h2>
     </>
   )
-}
-
-Login.propTypes = {
-
 }
 
 export default Login
