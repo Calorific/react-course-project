@@ -9,7 +9,7 @@ import GroupList from './groupList'
 import UsersTable from './usersTable'
 
 import _ from 'lodash'
-const Users = () => {
+const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [professions, setProfessions] = useState()
   const [selectedProf, setSelectedProf] = useState()
@@ -57,7 +57,6 @@ const Users = () => {
   }
 
   if (users) {
-
     const filteredUsers = selectedProf ? users.filter(u => u.profession._id === selectedProf._id) : users
     const count = filteredUsers.length
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
@@ -97,13 +96,12 @@ const Users = () => {
         </div>
     )
   }
-  return 'loading...'
+  return <h4>Loading...</h4>
 }
 
-Users.propTypes = {
+UsersList.propTypes = {
   users: PropTypes.arrayOf(PropTypes.object),
   rest: PropTypes.arrayOf(PropTypes.func)
 }
 
-
-export default Users
+export default UsersList
