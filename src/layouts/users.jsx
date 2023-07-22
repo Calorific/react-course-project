@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
-import UserPage from './userPage'
-import UsersList from './usersList'
+import UserPage from '../components/userPage'
+import UsersList from '../components/usersList'
 
 const Users = () => {
   
