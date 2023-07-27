@@ -2,10 +2,13 @@ const validate = (validationMethod, data, config) => {
   let status
   switch (validationMethod) {
     case 'isRequired':
-      status = !data.trim()
+      if (typeof data === 'boolean')
+        status = !data
+      else
+        status = !data.trim()
       break
     case 'isEmail':
-      const emailRegexp = /^\S+@\S+\.\S+/g
+      const emailRegexp = /^\S+@\S+\.\S+$/g
       status = !emailRegexp.test(data)
       break
     case 'hasCapital':

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import placeholder from 'lodash/fp/placeholder'
 
 const TextField = ({ label, type, name, value, onChange, error, placeholder }) => {
   const [showPassword, setShowPassword] = useState(false)
+  
+  const handleChange = ({ target }) => {
+    onChange({ name: target.name, value: target.value })
+  }
   
   const toggleShowPassword = () => {
     setShowPassword(prevState => !prevState)
@@ -23,7 +26,7 @@ const TextField = ({ label, type, name, value, onChange, error, placeholder }) =
               type={showPassword ? 'test' : type}
               name={name}
               value={value}
-              onChange={onChange}
+              onChange={handleChange}
               className={getInputClasses()}
               placeholder={placeholder}
           />
