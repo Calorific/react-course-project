@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Bookmark from './bookmark'
-import QualitiesList from './qualitiesList'
-import Table from './table'
+import Bookmark from './common/bookmark'
+import QualitiesList from './ui/qualities/qualitiesList'
+import Table from './common/table/table'
 
 import { Link } from 'react-router-dom'
 
