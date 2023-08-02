@@ -13,8 +13,8 @@ const Bookmark = ({ isFavourite, onMarking }) => {
 }
 
 Bookmark.propTypes = {
-  isFavourite: PropTypes.bool.isRequired,
-  onMarking: PropTypes.func.isRequired
+  isFavourite: PropTypes.bool,
+  onMarking: PropTypes.func
 }
 
 export default Bookmark

@@ -16,7 +16,7 @@ const UserPage = () => {
   }
   return (
     <>
-      {Object.keys(user).length ? (
+      {user && Object.keys(user).length ? (
         <>
           <h1>{user.name}</h1>
           <h2>Профессия: {user.profession.name}</h2>
