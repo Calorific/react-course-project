@@ -10,19 +10,17 @@ import UsersTable from '../../usersTable'
 
 import _ from 'lodash'
 import TextField from '../../common/form/textField'
+import { useUsers } from '../../../hooks/useUsers'
+
 const UsersListPage = () => {
+  const { users } = useUsers()
+
   const [currentPage, setCurrentPage] = useState(1)
   const [professions, setProfessions] = useState()
   const [selectedProf, setSelectedProf] = useState()
   const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' })
   const [userSearch, setUserSearch] = useState('')
   const pageSize = 8
-
-  const [users, setUsers] = useState()
-
-  useEffect(() => {
-    api.users.fetchAll().then(data => setUsers(data))
-  }, [])
 
 
   useEffect(() => {
@@ -40,15 +38,14 @@ const UsersListPage = () => {
   }
 
   const handleDelete = id => {
-    setUsers(users.filter(user => user._id !== id))
+    console.log(id)
   }
 
   const handleMarking = id => {
     const allUsers = [...users]
     const user = allUsers.find(u => u._id === id)
     user.bookmark = !user.bookmark
-
-    setUsers(allUsers)
+    console.log(allUsers)
   }
 
   const handleSearch = e => {
@@ -72,7 +69,7 @@ const UsersListPage = () => {
 
   if (users) {
     const filteredUsers = selectedProf
-      ? users.filter(u => u.profession._id === selectedProf._id)
+      ? users.filter(u => u.profession === selectedProf._id)
       : userSearch ? users.filter(u => u.name.toLowerCase().includes(userSearch.toLowerCase().trim())) : users
     const count = filteredUsers.length
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])

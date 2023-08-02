@@ -5,12 +5,13 @@ import QualitiesList from './ui/qualities/qualitiesList'
 import Table from './common/table/table'
 
 import { Link } from 'react-router-dom'
+import Profession from './profession'
 
 const UsersTable = ({ users, onSort, selectedSort, onMarking, onDelete }) => {
   const columns = {
     name: { path: 'name', name: 'Имя', component: user => <Link to={`/users/${user._id}`}>{user.name}</Link> },
     qualities: { name: 'Качества', component: user => <QualitiesList qualities={user.qualities} /> },
-    professions: { path: 'profession.name', name: 'Профессия' },
+    professions: { name: 'Профессия', component: user => <Profession id={user.profession} /> },
     completedMeetings: { path: 'completedMeetings', name: 'Встретился, раз' },
     rate: { path: 'rate', name: 'Оценка' },
     bookmark: {
