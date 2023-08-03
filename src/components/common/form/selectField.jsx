@@ -21,7 +21,7 @@ const SelectField = ({ label, value, onChange, defaultOption, options, error, na
         <select name={name} id={name} className={getInputClasses()} value={value} onChange={handleChange}>
           <option value="" disabled>{defaultOption}</option>
           {optionsArray && optionsArray.map(option => (
-              <option key={option.value} value={option.value}>{option.name}</option>
+              <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </select>
         {error && <div className="invalid-feedback">
