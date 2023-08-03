@@ -13,13 +13,11 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 const RegisterForm = () => {
   const history = useHistory()
   const [data, setData] = useState({
-    email: 'abc@mail.ru',
-    password: 'a1A11a1111',
-    profession: '67rdca3eeb7f6fgeed471814',
+    email: '',
+    password: '',
+    profession: '',
     sex: 'male',
-    qualities: [
-      { label: 'Красавчик', value: '67rdca3eeb7f6fgeed471102' }
-    ],
+    qualities: [],
     license: true
   })
   const [errors, setErrors] = useState({})
