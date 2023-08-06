@@ -9,13 +9,13 @@ const QualitiesList = ({ qualities }) => {
     return 'Loading...'
   return (
     <>
-      {qualities.map(q => <Quality qualityId={q} key={q} />)}
+      {qualities?.map(q => <Quality qualityId={q} key={q} />)}
     </>
   )
 }
 
 QualitiesList.propTypes = {
-  qualities: PropTypes.array.isRequired,
+  qualities: PropTypes.array,
 }
 
 export default QualitiesList

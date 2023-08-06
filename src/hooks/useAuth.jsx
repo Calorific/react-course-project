@@ -3,18 +3,43 @@ import PropTypes from 'prop-types'
 import axios from 'axios'
 import userService from '../services/user.service'
 import { toast } from 'react-toastify'
-import { setTokens } from '../services/localStorage.service'
+import localStorageService, { setTokens } from '../services/localStorage.service'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom'
+
 const AuthContext = React.createContext()
 
-const httpAuth = axios.create()
+export const httpAuth = axios.create({
+  baseURL: 'https://identitytoolkit.googleapis.com/v1/',
+  params: {
+    key: process.env.REACT_APP_FIREBASE_KEY
+  }
+})
 
 export const useAuth = () => {
   return useContext(AuthContext)
 }
 
 const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState({})
+  const history = useHistory()
+
+  const [currentUser, setCurrentUser] = useState(null)
   const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  async function getUserData() {
+    try {
+      const { content } = await userService.getCurrentUser()
+      setCurrentUser(content)
+    } catch (e) {
+      errorCatcher(e)
+    }
+  }
+
+  useEffect(() => {
+    if (localStorageService.getAccessToken())
+      getUserData().finally(() => setIsLoading(false))
+    else setIsLoading(false)
+  }, [])
 
   useEffect(() => {
     if (error) {
@@ -29,32 +54,55 @@ const AuthProvider = ({ children }) => {
       setCurrentUser(content)
     } catch (e) {
       errorCatcher(e)
+    } finally {
+      setIsLoading(false)
     }
   }
 
+  const updateUser = async data => {
+    try {
+      const { content } = await userService.update(data)
+      setCurrentUser(content)
+    } catch (e) {
+      errorCatcher(e)
+    }
+  }
 
+  const randomInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
 
   const signUp = async ({ email, password, ...rest }) => {
-    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`
     try {
-      const { data } = await httpAuth.post(url, { email, password, returnSecureToken: true })
+      const { data } = await httpAuth.post('accounts:signUp', { email, password, returnSecureToken: true })
       setTokens(data)
-      await createUser({ _id: data.localId, email, ...rest })
+      await createUser({
+        _id: data.localId,
+        email,
+        rate: randomInt(1, 5),
+        completedMeetings: randomInt(0, 200),
+        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1).toString(36).substring(7)}.svg`,
+        ...rest
+      })
     } catch (e) {
       throw errorCatcher(e)
     }
   }
 
   const signIn = async ({ email, password }) => {
-    const key = process.env.REACT_APP_FIREBASE_KEY
-    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${key}`
-
     try {
-      const { data } = await httpAuth.post(url, { email, password, returnSecureToken: true })
+      const { data } = await httpAuth.post('accounts:signInWithPassword', { email, password, returnSecureToken: true })
       setTokens(data)
+      await getUserData()
     } catch (e) {
       throw errorCatcher(e)
     }
+  }
+
+  const logout = () => {
+    localStorageService.removeAuthData()
+    setCurrentUser(null)
+    history.push('/')
   }
 
   function errorCatcher(e) {
@@ -84,8 +132,8 @@ const AuthProvider = ({ children }) => {
   }
 
   return (
-      <AuthContext.Provider value={{ signUp, signIn, currentUser }}>
-        {children}
+      <AuthContext.Provider value={{ signUp, signIn, currentUser, logout, updateUser }}>
+        {!isLoading ? children : 'Loading...'}
       </AuthContext.Provider>
   )
 }

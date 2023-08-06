@@ -14,11 +14,12 @@ const RegisterForm = () => {
   const history = useHistory()
   const [data, setData] = useState({
     email: '',
+    name: '',
     password: '',
     profession: '',
     sex: 'male',
     qualities: [],
-    license: true
+    license: false
   })
   const [errors, setErrors] = useState({})
 
@@ -39,6 +40,13 @@ const RegisterForm = () => {
       isRequired: { message: 'Email обязателен для заполнения' },
       isEmail: { message: 'Email введен некорректно' }
     },
+    name: {
+      isRequired: { message: 'Имя обязательно для заполнения' },
+      min: {
+        value: 3,
+        message: 'Должно быть минимум 3 символа'
+      }
+    },
     password: {
       isRequired: { message: 'Пароль обязателен для заполнения' },
       hasCapital: { message: 'Должна быть хотя бы одна заглавная буква' },
@@ -57,11 +65,15 @@ const RegisterForm = () => {
       isRequired: {
         message: 'Вы не можете пользоваться нашим сервисом без подтверждения лицензионного соглашения'
       }
+    },
+    qualities: {
+      isRequired: { message: 'Нужно выбрать хотя бы одно качество' }
     }
   }
 
   const handleChange = target => {
     setData(prevState => ({ ...prevState, [target.name]: target.value }))
+    console.log(data)
   }
 
   const validate = () => {
@@ -89,6 +101,8 @@ const RegisterForm = () => {
       <form onSubmit={handleSubmit}>
         <TextField label="Электронная почта" name="email" value={data.email} onChange={handleChange}
                    error={errors.email}/>
+        <TextField label="Имя" name="name" value={data.name} onChange={handleChange}
+                   error={errors.name}/>
         <TextField label="Пароль" type="password" name="password" value={data.password} onChange={handleChange}
                    error={errors.password}/>
         <SelectField onChange={handleChange} defaultOption="Choose..." label='Выберите вашу профессию'
@@ -97,7 +111,8 @@ const RegisterForm = () => {
             onChange={handleChange}
             options={[{ name: 'Male', value: 'male' }, { name: 'Female', value: 'female' }, { name: 'Other', value: 'other' }]}
             name='sex' value={data.sex} label="Выберите ваш пол" />
-        <MultiSelectField onChange={handleChange} options={qualitiesList} name="qualities" label="Выберите ваши качества" />
+        <MultiSelectField onChange={handleChange} options={qualitiesList} name="qualities"
+                          label="Выберите ваши качества" error={errors.qualities} />
         <CheckboxField onChange={handleChange} name="license" value={data.license} error={errors.license}>
           Принимаю <a href="">Лицензионное соглашение</a>
         </CheckboxField>

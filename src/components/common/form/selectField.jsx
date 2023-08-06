@@ -33,10 +33,10 @@ const SelectField = ({ label, value, onChange, defaultOption, options, error, na
 }
 
 SelectField.propTypes = {
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  defaultOption: PropTypes.string.isRequired,
+  defaultOption: PropTypes.string,
   options: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   error: PropTypes.string,
   name: PropTypes.string.isRequired

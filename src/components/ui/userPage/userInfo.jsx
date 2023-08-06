@@ -1,22 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import QualitiesList from '../qualities'
+import { useAuth } from '../../../hooks/useAuth'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom'
+import Profession from '../../profession'
 
-const UserInfo = ({ name, profession, rate, qualities, completedMeetings, handleClick }) => {
-  
+const UserInfo = ({ name, profession, rate, qualities, completedMeetings, image, _id }) => {
+  const { currentUser } = useAuth()
+  const history = useHistory()
+
   return (
     <>
       <div className="card mb-3">
         <div className="card-body">
-          <button className="position-absolute top-0 end-0 btn btn-light btn-sm">
-            <i className="bi bi-gear" onClick={handleClick}></i>
-          </button>
+          {currentUser._id === _id ? <button className="position-absolute top-0 end-0 btn btn-light btn-sm">
+            <i className="bi bi-gear" onClick={() => history.push(history.location.pathname + '/edit')}></i>
+          </button> : ''}
           <div className="d-flex flex-column align-items-center text-center position-relative">
-            <img src={`https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1).toString(36).substring(7)}.svg`}
-                className="rounded-circle shadow-1-strong me-3" alt="avatar" width="65" height="65"/>
+            <img src={image} className="rounded-circle shadow-1-strong me-3" alt="avatar" width="65" height="65"/>
             <div className="mt-3">
               <h4>{name}</h4>
-              <p className="text-secondary mb-1">{profession}</p>
+              <p className="text-secondary mb-1">
+                <Profession id={profession} />
+              </p>
               <div className="text-muted">
                 <i className="bi bi-caret-down-fill text-primary" role="button"></i>
                 <i className="bi bi-caret-up text-secondary" role="button"></i>
@@ -55,7 +61,9 @@ UserInfo.propTypes = {
   rate: PropTypes.number.isRequired,
   qualities: PropTypes.array.isRequired,
   completedMeetings: PropTypes.number.isRequired,
-  handleClick: PropTypes.func
+  handleClick: PropTypes.func,
+  image: PropTypes.string,
+  _id: PropTypes.string,
 }
 
 export default UserInfo

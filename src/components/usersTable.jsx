@@ -7,7 +7,7 @@ import Table from './common/table/table'
 import { Link } from 'react-router-dom'
 import Profession from './profession'
 
-const UsersTable = ({ users, onSort, selectedSort, onMarking, onDelete }) => {
+const UsersTable = ({ users, onSort, selectedSort, onMarking }) => {
   const columns = {
     name: { path: 'name', name: 'Имя', component: user => <Link to={`/users/${user._id}`}>{user.name}</Link> },
     qualities: { name: 'Качества', component: user => <QualitiesList qualities={user.qualities} /> },
@@ -18,13 +18,6 @@ const UsersTable = ({ users, onSort, selectedSort, onMarking, onDelete }) => {
       path: 'bookmark',
       name: 'Избранное',
       component: user => <Bookmark isFavourite={user.bookmark} onMarking={() => onMarking(user._id)}/>
-    },
-    delete: {
-      component: user => (
-        <button className="btn btn-danger" onClick={() => onDelete(user._id)}>
-          Удалить
-        </button>
-      )
     }
   }
 
@@ -39,8 +32,7 @@ UsersTable.propTypes = {
   users: PropTypes.array.isRequired,
   onSort: PropTypes.func.isRequired,
   selectedSort: PropTypes.object.isRequired,
-  onMarking: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
+  onMarking: PropTypes.func.isRequired
 }
 
 export default UsersTable

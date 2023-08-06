@@ -45,9 +45,11 @@ const LoginForm = () => {
   const handleSubmit = async e => {
     e.preventDefault()
     if (!validate()) return
+    const redirectTo = history.location.state ? history.location.state.from.pathname : '/'
     try {
+
       await signIn(data)
-      history.push('/')
+      history.push(redirectTo)
     } catch (e) {
       setErrors(e)
     }
