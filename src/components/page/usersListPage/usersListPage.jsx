@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import _ from 'lodash'
 
 import SearchStatus from '../../searchStatus'
 import Pagination from '../../common/pagination'
@@ -7,16 +8,19 @@ import paginate from '../../../utils/paginate'
 import GroupList from '../../common/groupList'
 import UsersTable from '../../usersTable'
 
-import _ from 'lodash'
 import TextField from '../../common/form/textField'
 import { useUsers } from '../../../hooks/useUsers'
-import { useProfessions } from '../../../hooks/useProfessions'
 import { useAuth } from '../../../hooks/useAuth'
+import { useSelector } from 'react-redux'
+import { getProfessions, getProfessionsLoadingStatus } from '../../../store/professions'
 
 const UsersListPage = () => {
   const { users } = useUsers()
   const { currentUser } = useAuth()
-  const { professions, isLoading: professionsLoading } = useProfessions()
+
+  const professions = useSelector(getProfessions())
+  const professionsLoading = useSelector(getProfessionsLoadingStatus())
+
 
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedProf, setSelectedProf] = useState()

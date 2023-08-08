@@ -5,11 +5,11 @@ import SelectField from '../common/form/selectField'
 import RadioField from '../common/form/radioField'
 import MultiSelectField from '../common/form/multiSelectField'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
-import { useUsers } from '../../hooks/useUsers'
-import { useProfessions } from '../../hooks/useProfessions'
-import { useQualities } from '../../hooks/useQualities'
 import { useAuth } from '../../hooks/useAuth'
 import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
+import { getQualities, getQualitiesLoadingStatus } from '../../store/qualities'
+import { getProfessions, getProfessionsLoadingStatus } from '../../store/professions'
 
 const UserEditForm = ({ id }) => {
   const history = useHistory()
@@ -17,11 +17,13 @@ const UserEditForm = ({ id }) => {
 
   const { updateUser } = useAuth()
 
-  const { professions: professionsList, loading: professionsLoading } = useProfessions()
-  const professions = professionsList.map(p => ({ ...p, label: p.name, value: p._id }))
+  const professionsList = useSelector(getProfessions())
+  const professionsLoading = useSelector(getProfessionsLoadingStatus())
+  const professions = professionsList?.map(p => ({ ...p, label: p.name, value: p._id })) || []
 
-  const { qualities: qualitiesList, loading: qualitiesLoading } = useQualities()
-  const qualities = qualitiesList.map(q => ({ label: q.name, value: q._id }))
+  const qualitiesLoading = useSelector(getQualitiesLoadingStatus())
+  const qualitiesList = useSelector(getQualities())
+  const qualities = qualitiesList?.map(q => ({ label: q.name, value: q._id })) || []
 
   const [errors, setErrors] = useState({})
 
@@ -78,7 +80,6 @@ const UserEditForm = ({ id }) => {
 
   return (
       <>
-        {id}
       {!professionsLoading && !qualitiesLoading ? (
         <form onSubmit={handleSubmit}>
           <TextField label="Имя" name="name" value={data.name} onChange={handleChange}
