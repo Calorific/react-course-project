@@ -1,29 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import { validator } from '../../utils/validator'
 import TextField from '../common/form/textField'
-import api from '../../API'
 import SelectField from '../common/form/selectField'
 import RadioField from '../common/form/radioField'
 import MultiSelectField from '../common/form/multiSelectField'
 import CheckboxField from '../common/form/checkboxField'
+import { useAuth } from '../../hooks/useAuth'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom'
+import { useSelector } from 'react-redux'
+import { getQualities } from '../../store/qualities'
+import { getProfessions } from '../../store/professions'
 
 const RegisterForm = () => {
+  const history = useHistory()
   const [data, setData] = useState({
     email: '',
+    name: '',
     password: '',
     profession: '',
     sex: 'male',
     qualities: [],
     license: false
   })
-  const [qualities, setQualities] = useState({})
-  const [professions, setProfessions] = useState()
   const [errors, setErrors] = useState({})
 
-  useEffect(() => {
-    api.professions.fetchAll().then(data => setProfessions(data))
-    api.qualities.fetchAll().then(data => setQualities(data))
-  })
+  const { signUp } = useAuth()
+
+  const qualities = useSelector(getQualities()) || []
+  const qualitiesList = qualities.map(q => ({ label: q.name, value: q._id }))
+
+  const professions = useSelector(getProfessions()) || []
+  const professionsList = professions.map(p => ({ label: p.name, value: p._id }))
 
   useEffect(() => {
     validate()
@@ -33,6 +40,13 @@ const RegisterForm = () => {
     email: {
       isRequired: { message: 'Email обязателен для заполнения' },
       isEmail: { message: 'Email введен некорректно' }
+    },
+    name: {
+      isRequired: { message: 'Имя обязательно для заполнения' },
+      min: {
+        value: 3,
+        message: 'Должно быть минимум 3 символа'
+      }
     },
     password: {
       isRequired: { message: 'Пароль обязателен для заполнения' },
@@ -52,6 +66,9 @@ const RegisterForm = () => {
       isRequired: {
         message: 'Вы не можете пользоваться нашим сервисом без подтверждения лицензионного соглашения'
       }
+    },
+    qualities: {
+      isRequired: { message: 'Нужно выбрать хотя бы одно качество' }
     }
   }
 
@@ -65,10 +82,17 @@ const RegisterForm = () => {
     return !Object.keys(errors).length
   }
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
     if (!validate()) return
-    console.log('submit')
+
+    const newData = { ...data, qualities: data.qualities.map(q => q.value) }
+    try {
+      await signUp(newData)
+      history.push('/')
+    } catch (e) {
+      setErrors(e)
+    }
   }
 
   const isValid = !Object.keys(errors).length
@@ -77,16 +101,18 @@ const RegisterForm = () => {
       <form onSubmit={handleSubmit}>
         <TextField label="Электронная почта" name="email" value={data.email} onChange={handleChange}
                    error={errors.email}/>
+        <TextField label="Имя" name="name" value={data.name} onChange={handleChange}
+                   error={errors.name}/>
         <TextField label="Пароль" type="password" name="password" value={data.password} onChange={handleChange}
                    error={errors.password}/>
         <SelectField onChange={handleChange} defaultOption="Choose..." label='Выберите вашу профессию'
-                     error={errors.profession} value={data.profession} options={professions} name='profession' />
+                     error={errors.profession} value={data.profession} options={professionsList} name='profession' />
         <RadioField
             onChange={handleChange}
             options={[{ name: 'Male', value: 'male' }, { name: 'Female', value: 'female' }, { name: 'Other', value: 'other' }]}
             name='sex' value={data.sex} label="Выберите ваш пол" />
-        <MultiSelectField onChange={handleChange} options={qualities} name="qualities" label="Выберите ваши качества"
-                          defaultValue={data.qualities}/>
+        <MultiSelectField onChange={handleChange} options={qualitiesList} name="qualities"
+                          label="Выберите ваши качества" error={errors.qualities} />
         <CheckboxField onChange={handleChange} name="license" value={data.license} error={errors.license}>
           Принимаю <a href="">Лицензионное соглашение</a>
         </CheckboxField>
@@ -94,6 +120,5 @@ const RegisterForm = () => {
       </form>
   )
 }
-
 
 export default RegisterForm

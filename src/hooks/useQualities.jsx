@@ -31,7 +31,7 @@ const QualityProvider = ({ children }) => {
 
   async function getQualitiesList() {
     try {
-      const { content } = await qualityService.get()
+      const { content } = await qualityService.fetchAll()
       setQualities(content)
       setLoading(false)
     } catch (e) {
@@ -45,7 +45,7 @@ const QualityProvider = ({ children }) => {
   }
 
   return (
-      <QualityContext.Provider value={{ getQualitiesList, getQuality, loading }}>
+      <QualityContext.Provider value={{ qualities, loading, getQuality }}>
         {!loading ? children : 'Loading...'}
       </QualityContext.Provider>
   )

@@ -3,28 +3,19 @@ import PropTypes from 'prop-types'
 import TextareaField from '../form/textareaField'
 import api from '../../../API'
 import { validator } from '../../../utils/validator'
-import SelectField from '../form/selectField'
+import { useComments } from '../../../hooks/useComments'
 
-const CommentForm = ({ id, onAdd }) => {
-  const initialState = { user: '', content: '' }
+const CommentForm = ({ id }) => {
+  const { createComment } = useComments()
 
-  const [data, setData] = useState(initialState)
-
-  const [users, setUsers] = useState([])
+  const [data, setData] = useState({ content: '' })
   const [errors, setErrors] = useState({})
-
-  useEffect(() => {
-    api.users.fetchAll().then(data => setUsers(data.map(u => ({ value: u._id, name: u.name }))))
-  }, [])
 
   useEffect(() => {
     validate()
   }, [data])
 
   const validatorConfig = {
-    user: {
-      isRequired: { message: 'Пользователь должен быть выбран' }
-    },
     content: {
       isRequired: { message: 'Поле обязательно для заполнения' }
     }
@@ -42,10 +33,13 @@ const CommentForm = ({ id, onAdd }) => {
 
   const handleSubmit = e => {
     e.preventDefault()
-    if (!validate()) return
-    setData(initialState)
+
+    if (!validate())
+      return
+
+    setData({ content: '' })
     setErrors({})
-    api.comments.add({ pageId: id, userId: data.user, content: data.content }).then(comment => onAdd(comment))
+    createComment(data)
   }
 
   const isValid = !Object.keys(errors).length
@@ -55,8 +49,6 @@ const CommentForm = ({ id, onAdd }) => {
         <div className="card-body">
           <div>
             <h2>New comment</h2>
-            <SelectField onChange={handleChange} name='user' value={data.user} defaultOption='Выберите пользователя'
-              options={users} error={errors.user} />
             <TextareaField name='content' value={data.content} onChange={handleChange} label='Сообщение'
               error={errors.content} rows={3} />
             <div className="d-flex justify-content-end">

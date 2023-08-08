@@ -4,8 +4,12 @@ const validate = (validationMethod, data, config) => {
     case 'isRequired':
       if (typeof data === 'boolean')
         status = !data
-      else
+      else if (typeof data === 'string')
         status = !data.trim()
+      else if (Array.isArray(data))
+        status = !data.length
+      else
+        status = !data
       break
     case 'isEmail':
       const emailRegexp = /^\S+@\S+\.\S+$/g
