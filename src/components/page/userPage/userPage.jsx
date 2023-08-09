@@ -4,11 +4,12 @@ import { useUsers } from '../../../hooks/useUsers'
 import UserInfo from '../../ui/userPage/userInfo'
 import Comments from '../../ui/userPage/comments'
 import { CommentsProvider } from '../../../hooks/useComments'
+import { useSelector } from 'react-redux'
+import { getUserById } from '../../../store/users'
 
 const UserPage = () => {
   const { id } = useParams()
-  const { getUserById } = useUsers()
-  const user = getUserById(id)
+  const user = useSelector(getUserById(id))
   
   return (
     <>

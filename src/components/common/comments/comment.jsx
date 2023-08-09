@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { getTime } from '../../../utils/getDate'
-import { useUsers } from '../../../hooks/useUsers'
-import { useAuth } from '../../../hooks/useAuth'
+import { getCurrentUserId, getUserById } from '../../../store/users'
+import { useSelector } from 'react-redux'
 
 const Comment = ({ comment, onDelete }) => {
-  const { currentUser } = useAuth()
-  const { getUserById } = useUsers()
-  const user = getUserById(comment.userId)
+  const currentUser = useSelector(getCurrentUserId())
+  const user = useSelector(getUserById(comment.userId))
 
   return (
       <>
@@ -24,7 +23,7 @@ const Comment = ({ comment, onDelete }) => {
                         {user.name} {' '}
                         <span className="small">{getTime(+comment.created_at)}</span>
                       </p>
-                      {currentUser._id === comment.userId && <button
+                      {currentUser === comment.userId && <button
                           className="btn btn-sm text-primary d-flex align-items-center"
                           onClick={() => onDelete(comment._id)}
                       >

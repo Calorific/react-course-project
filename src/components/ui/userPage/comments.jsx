@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import commentsApi from '../../../API/fake.api/comments.api'
 import { useParams } from 'react-router-dom/cjs/react-router-dom'
 import CommentForm from '../../common/comments/commentForm'
 import Comment from '../../common/comments/comment'

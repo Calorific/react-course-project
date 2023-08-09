@@ -4,18 +4,16 @@ import TextField from '../common/form/textField'
 import SelectField from '../common/form/selectField'
 import RadioField from '../common/form/radioField'
 import MultiSelectField from '../common/form/multiSelectField'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom'
-import { useAuth } from '../../hooks/useAuth'
 import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getQualities, getQualitiesLoadingStatus } from '../../store/qualities'
 import { getProfessions, getProfessionsLoadingStatus } from '../../store/professions'
+import { getCurrentUserData, updateUser } from '../../store/users'
 
 const UserEditForm = ({ id }) => {
-  const history = useHistory()
-  const { currentUser: user } = useAuth()
+  const dispatch = useDispatch()
 
-  const { updateUser } = useAuth()
+  const user = useSelector(getCurrentUserData())
 
   const professionsList = useSelector(getProfessions())
   const professionsLoading = useSelector(getProfessionsLoadingStatus())
@@ -67,13 +65,12 @@ const UserEditForm = ({ id }) => {
     return !Object.keys(errors).length
   }
 
-  const handleSubmit = async e => {
+  const handleSubmit = e => {
     e.preventDefault()
     if (!validate()) return
 
     const newData = { ...data, qualities: data.qualities.map(q => q.value) }
-    await updateUser(newData)
-    history.push(`/users/${id}`)
+    dispatch(updateUser(newData))
   }
 
   const isValid = !Object.keys(errors).length

@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import QualitiesList from '../qualities'
-import { useAuth } from '../../../hooks/useAuth'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import Profession from '../../profession'
+import { useSelector } from 'react-redux'
+import { getCurrentUserData } from '../../../store/users'
 
 const UserInfo = ({ name, profession, rate, qualities, completedMeetings, image, _id }) => {
-  const { currentUser } = useAuth()
+  const currentUser = useSelector(getCurrentUserData())
   const history = useHistory()
 
   return (

@@ -9,14 +9,13 @@ import GroupList from '../../common/groupList'
 import UsersTable from '../../usersTable'
 
 import TextField from '../../common/form/textField'
-import { useUsers } from '../../../hooks/useUsers'
-import { useAuth } from '../../../hooks/useAuth'
 import { useSelector } from 'react-redux'
 import { getProfessions, getProfessionsLoadingStatus } from '../../../store/professions'
+import { getCurrentUserId, getUsersList } from '../../../store/users'
 
 const UsersListPage = () => {
-  const { users } = useUsers()
-  const { currentUser } = useAuth()
+  const users = useSelector(getUsersList())
+  const currentUserId = useSelector(getCurrentUserId())
 
   const professions = useSelector(getProfessions())
   const professionsLoading = useSelector(getProfessionsLoadingStatus())
@@ -40,7 +39,6 @@ const UsersListPage = () => {
     const allUsers = [...users]
     const user = allUsers.find(u => u._id === id)
     user.bookmark = !user.bookmark
-    console.log(allUsers)
   }
 
   const handleSearch = e => {
@@ -67,7 +65,7 @@ const UsersListPage = () => {
       const filteredUsers = selectedProf
         ? data.filter(u => u.profession === selectedProf._id)
         : userSearch ? data.filter(u => u.name.toLowerCase().includes(userSearch.toLowerCase().trim())) : data
-      return filteredUsers.filter(u => u._id !== currentUser._id)
+      return filteredUsers.filter(u => u._id !== currentUserId)
     }
 
     const filteredUsers = filterUsers(users)

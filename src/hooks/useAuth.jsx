@@ -5,6 +5,7 @@ import userService from '../services/user.service'
 import { toast } from 'react-toastify'
 import localStorageService, { setTokens } from '../services/localStorage.service'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
+import { randomInt } from '../utils/randomInt'
 
 const AuthContext = React.createContext()
 
@@ -68,9 +69,7 @@ const AuthProvider = ({ children }) => {
     }
   }
 
-  const randomInt = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min
-  }
+
 
   const signUp = async ({ email, password, ...rest }) => {
     try {
