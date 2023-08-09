@@ -74,7 +74,7 @@ const UsersListPage = () => {
     const userCrop = paginate(sortedUsers, currentPage, pageSize)
     return (
         <div className="d-flex">
-          {professions && count && !professionsLoading ?
+          {professions && !professionsLoading ?
             <div className="d-flex flex-column flex-shrink-0 p-3">
               <GroupList
                   selectedItem={selectedProf}
