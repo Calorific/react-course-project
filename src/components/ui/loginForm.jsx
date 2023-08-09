@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { validator } from '../../utils/validator'
 import TextField from '../common/form/textField'
 import CheckboxField from '../common/form/checkboxField'
-import { useAuth } from '../../hooks/useAuth'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
-import { useDispatch } from 'react-redux'
-import { login } from '../../store/users'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAuthError, login } from '../../store/users'
+import { toast } from 'react-toastify'
 
 const LoginForm = () => {
   const history = useHistory()
   const dispatch = useDispatch()
+
+  const loginError = useSelector(getAuthError())
 
   const [data, setData] = useState({ email: '', password: '', stayOn: false })
   const [errors, setErrors] = useState({})
@@ -18,6 +20,11 @@ const LoginForm = () => {
     validate()
   }, [data])
 
+  useEffect(() => {
+    if (typeof loginError === 'object')
+      setErrors(prevState => ({ ...prevState, ...loginError }))
+    toast.error(loginError)
+  }, [loginError])
 
   const validatorConfig = {
     email: {
