@@ -17,7 +17,7 @@ const UsersTable = ({ users, onSort, selectedSort, onMarking }) => {
     bookmark: {
       path: 'bookmark',
       name: 'Избранное',
-      component: user => <Bookmark isFavourite={user.bookmark} onMarking={() => onMarking(user._id)}/>
+      component: user => <Bookmark userId={user._id} onMarking={() => onMarking(user._id)}/>
     }
   }
 

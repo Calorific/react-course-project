@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import TextareaField from '../form/textareaField'
-import api from '../../../API'
 import { validator } from '../../../utils/validator'
-import { useComments } from '../../../hooks/useComments'
+import { createComment } from '../../../store/comments'
+import { nanoid } from 'nanoid'
+import { useDispatch, useSelector } from 'react-redux'
+import { getCurrentUserId } from '../../../store/users'
 
 const CommentForm = ({ id }) => {
-  const { createComment } = useComments()
+  const dispatch = useDispatch()
+  const currentUserId = useSelector(getCurrentUserId())
 
   const [data, setData] = useState({ content: '' })
   const [errors, setErrors] = useState({})
@@ -37,9 +40,14 @@ const CommentForm = ({ id }) => {
     if (!validate())
       return
 
+    const newData = {
+      ...data,
+      pageId: id
+    }
+
     setData({ content: '' })
     setErrors({})
-    createComment(data)
+    dispatch(createComment(newData))
   }
 
   const isValid = !Object.keys(errors).length

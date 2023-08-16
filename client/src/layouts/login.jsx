@@ -20,11 +20,16 @@ const Login = () => {
               {formType === 'register' ? (<>
                 <h3 className="mb-4">Register</h3>
                 <RegisterForm />
-                <p>Already have an account? <a role='button' onClick={toggleFormType}>Sign in</a></p>
+                <p>Already have an account?&nbsp;
+                  <a role='button' style={{ color: '#007bff', textDecoration: 'none' }} onClick={toggleFormType}>Sign in</a>
+                </p>
               </>) : (<>
                 <h3 className="mb-4">Login</h3>
                 <LoginForm />
-                <p>Don&apos;t have an account? <a role='button' onClick={toggleFormType}>Sign up</a></p>
+                <p>
+                  Don&apos;t have an account?&nbsp;
+                  <a role='button' style={{ color: '#007bff', textDecoration: 'none' }} onClick={toggleFormType}>Sign up</a>
+                </p>
               </>)}
             </div>
           </div>

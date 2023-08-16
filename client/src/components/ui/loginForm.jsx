@@ -2,12 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { validator } from '../../utils/validator'
 import TextField from '../common/form/textField'
 import CheckboxField from '../common/form/checkboxField'
-import { useAuth } from '../../hooks/useAuth'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAuthError, login } from '../../store/users'
+import { toast } from 'react-toastify'
 
 const LoginForm = () => {
   const history = useHistory()
-  const { signIn } = useAuth()
+  const dispatch = useDispatch()
+
+  const loginError = useSelector(getAuthError())
+
   const [data, setData] = useState({ email: '', password: '', stayOn: false })
   const [errors, setErrors] = useState({})
 
@@ -15,6 +20,11 @@ const LoginForm = () => {
     validate()
   }, [data])
 
+  useEffect(() => {
+    if (typeof loginError === 'object')
+      setErrors(prevState => ({ ...prevState, ...loginError }))
+    toast.error(loginError)
+  }, [loginError])
 
   const validatorConfig = {
     email: {
@@ -42,17 +52,12 @@ const LoginForm = () => {
     return !Object.keys(errors).length
   }
 
-  const handleSubmit = async e => {
+  const handleSubmit = e => {
     e.preventDefault()
     if (!validate()) return
-    const redirectTo = history.location.state ? history.location.state.from.pathname : '/'
-    try {
-
-      await signIn(data)
-      history.push(redirectTo)
-    } catch (e) {
-      setErrors(e)
-    }
+    // history.push(redirectTo)
+    const redirect = history.location.state ? history.location.state.from.pathname : '/'
+    dispatch(login({ payload: data, redirect }))
   }
 
   const isValid = !Object.keys(errors).length

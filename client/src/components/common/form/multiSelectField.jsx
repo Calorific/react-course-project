@@ -9,6 +9,7 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue, error 
   const handleChange = value => {
     onChange({ name, value })
   }
+
   const getInputClasses = () => {
     return 'basic-multi-select' + (error ? ' is-invalid' : '')
   }

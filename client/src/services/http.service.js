@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import configFile from '../config.json'
-import { httpAuth } from '../hooks/useAuth'
 import localStorageService from './localStorage.service'
+import authService from './auth.service'
 
 const http = axios.create({
   baseURL: configFile.apiEndpoint
@@ -10,17 +10,18 @@ const http = axios.create({
 
 http.interceptors.request.use(
   async function(config) {
+    const expiresDate = localStorageService.getExpires()
+    const refreshToken = localStorageService.getRefreshToken()
+
+    const isExpired = refreshToken && expiresDate < Date.now()
+
     if (configFile.isFirebase) {
       const containsSlash = /\/$/gi.test(config.url)
       config.url = (containsSlash ? config.url.slice(0, -1) : config.url) + '.json'
 
-      const expiresDate = localStorageService.getExpires()
-      const refreshToken = localStorageService.getRefreshToken()
-      if (refreshToken && expiresDate < Date.now()) {
-        const { data } = await httpAuth.post('token', {
-          grant_type: 'refresh_token',
-          refresh_token: refreshToken
-        })
+
+      if (isExpired) {
+        const data = await authService.refresh()
         
         localStorageService.setTokens({
           refreshToken: data.refresh_token,
@@ -29,11 +30,20 @@ http.interceptors.request.use(
           localId: data.user_id
         })
       }
+    } else {
+      if (isExpired) {
+        const data = await authService.refresh()
+
+        localStorageService.setTokens(data)
+      }
     }
 
     const accessToken = localStorageService.getAccessToken()
     if (accessToken) {
-      config.params = { ...config.params, auth: accessToken }
+      config.headers = {
+        ...config.headers,
+        Authorization: `Bearer ${accessToken}`
+      }
     }
 
     return config
@@ -47,7 +57,7 @@ function transformData(data) {
 }
 
 http.interceptors.response.use(res => {
-  if (configFile.isFirebase) res.data = { content: transformData(res.data) }
+  res.data = { content: configFile.isFirebase ? transformData(res.data) : res.data }
   return res
 }, function(e) {
   const expectedError = e.response && e.response.status >= 400 && e.response.status < 500
@@ -62,6 +72,7 @@ const httpService = {
   get: http.get,
   post: http.post,
   put: http.put,
+  patch: http.patch,
   delete: http.delete
 }
 

@@ -1,4 +1,5 @@
-export const getTime = createdAt => {
+export const getTime = (createdAtDate) => {
+  const createdAt = new Date(createdAtDate).getTime()
   const diff = Date.now() - createdAt
   if (diff <= 60 * 1000)
     return '1 минуту назад'

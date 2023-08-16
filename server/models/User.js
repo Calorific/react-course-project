@@ -12,7 +12,8 @@ const schema = new Schema({
   sex: {
     type: String,
     enum: ['male', 'female', 'other']
-  }
+  },
+  favourites: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 }, {
   timestamps: true
 })
