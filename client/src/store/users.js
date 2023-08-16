@@ -116,7 +116,6 @@ export const updateUser = data => async dispatch => {
   try {
     const { content } = await userService.update(data)
     dispatch(userUpdated(content))
-    history.push(`/users/${content._id}`)
   } catch (e) {
     dispatch(userUpdateFailed(e.message))
   }

@@ -9,13 +9,14 @@ import GroupList from '../../common/groupList'
 import UsersTable from '../../usersTable'
 
 import TextField from '../../common/form/textField'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getProfessions, getProfessionsLoadingStatus } from '../../../store/professions'
-import { getCurrentUserId, getUsersList } from '../../../store/users'
+import { getCurrentUserData, getUsersList, updateUser } from '../../../store/users'
 
 const UsersListPage = () => {
+  const dispatch = useDispatch()
   const users = useSelector(getUsersList())
-  const currentUserId = useSelector(getCurrentUserId())
+  const currentUser = useSelector(getCurrentUserData())
 
   const professions = useSelector(getProfessions())
   const professionsLoading = useSelector(getProfessionsLoadingStatus())
@@ -36,9 +37,12 @@ const UsersListPage = () => {
   }
 
   const handleMarking = id => {
-    const allUsers = [...users]
-    const user = allUsers.find(u => u._id === id)
-    user.bookmark = !user.bookmark
+    const updatedUser = { ...currentUser }
+    if (updatedUser.favourites.includes(id))
+      updatedUser.favourites = updatedUser.favourites.filter(f => f !== id)
+    else
+      updatedUser.favourites = [...updatedUser.favourites, id]
+    dispatch(updateUser(updatedUser))
   }
 
   const handleSearch = data => {
@@ -64,13 +68,23 @@ const UsersListPage = () => {
       const filteredUsers = selectedProf
         ? data.filter(u => u.profession === selectedProf._id)
         : userSearch ? data.filter(u => u.name.toLowerCase().includes(userSearch.toLowerCase().trim())) : data
-      return filteredUsers.filter(u => u._id !== currentUserId)
+      return filteredUsers.filter(u => u._id !== currentUser._id)
     }
 
     const filteredUsers = filterUsers(users)
     const count = filteredUsers.length
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
-    const userCrop = paginate(sortedUsers, currentPage, pageSize)
+    const favourites = []
+    const rest = []
+
+    for (const user of sortedUsers) {
+      if (currentUser.favourites.includes(user._id))
+        favourites.push(user)
+      else
+        rest.push(user)
+    }
+
+    const userCrop = paginate(favourites.concat(rest), currentPage, pageSize)
     return (
         <div className="d-flex">
           {professions && !professionsLoading ?

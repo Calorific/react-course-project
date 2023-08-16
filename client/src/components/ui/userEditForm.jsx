@@ -10,6 +10,7 @@ import { getQualities, getQualitiesLoadingStatus } from '../../store/qualities'
 import { getProfessions, getProfessionsLoadingStatus } from '../../store/professions'
 import { getCurrentUserData, updateUser } from '../../store/users'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
+import history from '../../utils/history'
 
 const UserEditForm = ({ id }) => {
   const history = useHistory()
@@ -72,7 +73,7 @@ const UserEditForm = ({ id }) => {
     if (!validate()) return
 
     const newData = { ...data, qualities: data.qualities.map(q => q.value) }
-    dispatch(updateUser(newData))
+    dispatch(updateUser(newData)).then(() => history.push(`/users/${user._id}`))
   }
 
   const isValid = !Object.keys(errors).length
